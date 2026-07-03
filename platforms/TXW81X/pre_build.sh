@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 
 echo "=================================================="
 echo "[TXW81X pre_build.sh] RUNNING"
