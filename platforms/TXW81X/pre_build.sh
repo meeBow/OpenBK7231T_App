@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# force LF line endings
 echo "=================================================="
 echo "[TXW81X pre_build.sh] RUNNING"
 echo "PWD=$(pwd)"
