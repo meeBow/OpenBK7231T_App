@@ -15,9 +15,9 @@ fi
 echo "[TXW81X pre_build.sh] before:"
 grep -E "CUSTOM_SIZE|JPG0_BUF_LEN|JPG0_NODE|JPG1_BUF_LEN|JPG1_NODE" "$CFG" || true
 
-sed -i -E 's|#define[[:space:]]+CUSTOM_SIZE[[:space:]]+\(60\*1024\)|#define CUSTOM_SIZE                 (80*1024)|' "$CFG"
-sed -i -E 's|#define[[:space:]]+JPG0_NODE[[:space:]]+[0-9]+|#define JPG0_NODE     50|' "$CFG"
-sed -i -E 's|#define[[:space:]]+JPG1_NODE[[:space:]]+[0-9]+|#define JPG1_NODE     50|' "$CFG"
+sed -i -E 's|#define[[:space:]]+CUSTOM_SIZE[[:space:]]+\(60\*1024\)|#define CUSTOM_SIZE                 (70*1024)|' "$CFG"
+sed -i -E 's|#define[[:space:]]+JPG0_NODE[[:space:]]+[0-9]+|#define JPG0_NODE     45|' "$CFG"
+sed -i -E 's|#define[[:space:]]+JPG1_NODE[[:space:]]+[0-9]+|#define JPG1_NODE     45|' "$CFG"
 
 echo "[TXW81X pre_build.sh] after:"
 grep -E "CUSTOM_SIZE|JPG0_BUF_LEN|JPG0_NODE|JPG1_BUF_LEN|JPG1_NODE" "$CFG" || true
