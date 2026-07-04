@@ -19,8 +19,8 @@ sed -i -E 's|#define[[:space:]]+CMOS_AUTO_LOAD[[:space:]]+[0-9]+|#define CMOS_AU
 
 sed -i -E 's|#define[[:space:]]+DEV_SENSOR_GC0329[[:space:]]+[0-9]+|#define DEV_SENSOR_GC0329 0|' "$CFG"
 sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0A19[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0A19 0|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_BF3A03[[:space:]]+[0-9]+|#define DEV_SENSOR_BF3A03 1|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0828[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0828 0|' "$CFG"
+sed -i -E 's|#define[[:space:]]+DEV_SENSOR_BF3A03[[:space:]]+[0-9]+|#define DEV_SENSOR_BF3A03 0|' "$CFG"
+sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0828[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0828 1|' "$CFG"
 sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0A20[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0A20 0|' "$CFG"
 
 echo "[TXW81X pre_build.sh] sensor after:"
