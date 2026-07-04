@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "=================================================="
-echo "[TXW81X pre_build.sh] RUNNING - jpeg quality patch"
+echo "[TXW81X pre_build.sh] RUNNING - jpeg quality patch dqt4"
 echo "PWD=$(pwd)"
 echo "=================================================="
 
@@ -22,16 +22,16 @@ fi
 echo "[TXW81X pre_build.sh] current buffers:"
 grep -E "CUSTOM_SIZE|JPG0_BUF_LEN|JPG0_NODE|JPG1_BUF_LEN|JPG1_NODE" "$CFG" || true
 
-echo "[TXW81X pre_build.sh] wifi defines:"
-grep -E "WIFI_RTS_THRESHOLD|WIFI_RTS_MAX_RETRY|WIFI_TX_MAX_RETRY|WIFI_TX_MAX_POWER" "$CFG" || true
-
 echo "[TXW81X pre_build.sh] jpeg quality before:"
 grep -R -n -E "DQT_DEF|DQT_MAX_INDEX|TARGET_JPG_LEN|QUALITY_CTRL_" \
   "$JPG_H" \
   "$JPG_V2" \
   2>/dev/null || true
 
-sed -i -E 's|#define[[:space:]]+TARGET_JPG_LEN[[:space:]]+[0-9]+|#define TARGET_JPG_LEN     25000|' \
+sed -i -E 's|#define[[:space:]]+DQT_DEF[[:space:]]+[0-9]+|#define DQT_DEF            4|' \
+  "$JPG_H"
+
+sed -i -E 's|#define[[:space:]]+TARGET_JPG_LEN[[:space:]]+[0-9]+|#define TARGET_JPG_LEN     30000|' \
   "$JPG_H"
 
 echo "[TXW81X pre_build.sh] jpeg quality after:"
