@@ -57,7 +57,7 @@ grep -n -E "IMAGE_FORMAT|YUV_MODE" "$CSI_H" || true
 grep -n -E "dvp_set_format|vpp_set_ycbcr|vpp_set_mode" "$CSI_V2" || true
 
 # Test YUV byte order/mode
-sed -i -E 's|#define[[:space:]]+YUV_MODE[[:space:]]+[0-9]+|#define YUV_MODE                        1|' "$CSI_H"
+sed -i -E 's|#define[[:space:]]+YUV_MODE[[:space:]]+[0-9]+|#define YUV_MODE                        2|' "$CSI_H"
 
 echo "[TXW81X pre_build.sh] format after:"
 grep -n -E "IMAGE_FORMAT|YUV_MODE" "$CSI_H" || true
