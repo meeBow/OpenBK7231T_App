@@ -1,29 +1,20 @@
 #!/bin/sh
 
 echo "=================================================="
-echo "[TXW81X pre_build.sh] RUNNING - force sensor GC0329"
+echo "[TXW81X pre_build.sh] RUNNING - inspect image controls"
 echo "PWD=$(pwd)"
 echo "=================================================="
 
-CFG="sdk/OpenTXW81X/project/project_config.h"
+echo "[TXW81X pre_build.sh] image control candidates:"
+grep -R -n -E "brightness|contrast|saturation|sharp|sharpness|gamma|ae|awb|gain|exposure|black|level|color|matrix|yuv|rgb|vpp|prc|scale" \
+  sdk/OpenTXW81X/sdk/include \
+  sdk/OpenTXW81X/sdk/lib/video \
+  sdk/OpenTXW81X/project \
+  2>/dev/null | head -n 500 || true
 
-if [ ! -f "$CFG" ]; then
-  echo "[TXW81X pre_build.sh] ERROR: $CFG not found"
-  exit 1
-fi
-
-echo "[TXW81X pre_build.sh] sensor before:"
-grep -E "CMOS_AUTO_LOAD|DEV_SENSOR_" "$CFG" || true
-
-sed -i -E 's|#define[[:space:]]+CMOS_AUTO_LOAD[[:space:]]+[0-9]+|#define CMOS_AUTO_LOAD 0|' "$CFG"
-
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_GC0329[[:space:]]+[0-9]+|#define DEV_SENSOR_GC0329 0|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0A19[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0A19 0|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_BF3A03[[:space:]]+[0-9]+|#define DEV_SENSOR_BF3A03 0|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0828[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0828 0|' "$CFG"
-sed -i -E 's|#define[[:space:]]+DEV_SENSOR_SP0A20[[:space:]]+[0-9]+|#define DEV_SENSOR_SP0A20 1|' "$CFG"
-
-echo "[TXW81X pre_build.sh] sensor after:"
-grep -E "CMOS_AUTO_LOAD|DEV_SENSOR_" "$CFG" || true
+echo "[TXW81X pre_build.sh] sensor register candidates:"
+grep -R -n -E "GC0329|SP0A19|BF3A03|SP0828|SP0A20|gamma|contrast|saturation|brightness|awb|ae|gain|exposure|0x[0-9a-fA-F]" \
+  sdk/OpenTXW81X/sdk \
+  2>/dev/null | head -n 500 || true
 
 echo "[TXW81X pre_build.sh] DONE"
