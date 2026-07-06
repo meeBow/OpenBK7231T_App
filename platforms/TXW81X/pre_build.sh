@@ -1,7 +1,7 @@
 #!/bin/sh
 
 echo "=================================================="
-echo "[TXW81X pre_build.sh] RUNNING - jpeg max + vpp uv test"
+echo "[TXW81X pre_build.sh] RUNNING - jpeg max + vpp shrink test"
 echo "PWD=$(pwd)"
 echo "=================================================="
 
@@ -30,10 +30,14 @@ if [ ! -f "$CSI_V2" ]; then
   exit 1
 fi
 
+echo "[TXW81X pre_build.sh] current buffers:"
+grep -E "CUSTOM_SIZE|JPG0_BUF_LEN|JPG0_NODE|JPG1_BUF_LEN|JPG1_NODE" "$CFG" || true
+
 echo "[TXW81X pre_build.sh] jpeg before:"
 grep -R -n -E "DQT_DEF|DQT_MAX_INDEX|TARGET_JPG_LEN|QUALITY_CTRL_|g_dqtable_index|pdqt_tab" \
   "$JPG_H" "$JPG_V2" 2>/dev/null || true
 
+# JPEG max-ish quality
 sed -i -E 's|#define[[:space:]]+DQT_DEF[[:space:]]+[0-9]+|#define DQT_DEF            0|' "$JPG_H"
 sed -i -E 's|#define[[:space:]]+TARGET_JPG_LEN[[:space:]]+[0-9]+|#define TARGET_JPG_LEN     60000|' "$JPG_H"
 sed -i -E 's|#define[[:space:]]+QUALITY_CTRL_P[[:space:]]+[0-9]+|#define QUALITY_CTRL_P     0|' "$JPG_H"
@@ -48,11 +52,17 @@ grep -R -n -E "DQT_DEF|DQT_MAX_INDEX|TARGET_JPG_LEN|QUALITY_CTRL_|g_dqtable_inde
   "$JPG_H" "$JPG_V2" 2>/dev/null || true
 
 echo "[TXW81X pre_build.sh] vpp before:"
-grep -n -E "vpp_set_ycbcr|vpp_dis_uv_mode|vpp_set_threshold|vpp_set_mode" "$CSI_V2" || true
+grep -n -E "vpp_set_ycbcr|vpp_dis_uv_mode|vpp_set_threshold|vpp_set_mode|vpp_set_buf1_count|vpp_set_buf1_en|vpp_set_buf1_shrink|vpp_set_buf0_count" \
+  "$CSI_V2" || true
 
+# VPP UV mode test
 sed -i -E 's|vpp_dis_uv_mode\(vpp_test,1\);|vpp_dis_uv_mode(vpp_test,0);|' "$CSI_V2"
 
+# VPP buffer shrink test
+sed -i -E 's|vpp_set_buf1_shrink\(vpp_test,1\);|vpp_set_buf1_shrink(vpp_test,0);|' "$CSI_V2"
+
 echo "[TXW81X pre_build.sh] vpp after:"
-grep -n -E "vpp_set_ycbcr|vpp_dis_uv_mode|vpp_set_threshold|vpp_set_mode" "$CSI_V2" || true
+grep -n -E "vpp_set_ycbcr|vpp_dis_uv_mode|vpp_set_threshold|vpp_set_mode|vpp_set_buf1_count|vpp_set_buf1_en|vpp_set_buf1_shrink|vpp_set_buf0_count" \
+  "$CSI_V2" || true
 
 echo "[TXW81X pre_build.sh] DONE"
