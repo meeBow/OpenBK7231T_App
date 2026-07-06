@@ -1,5 +1,7 @@
+#!/bin/sh
+
 echo "=================================================="
-echo "[TXW81X pre_build.sh] RUNNING - jpeg max + yuv mode 1 test"
+echo "[TXW81X pre_build.sh] RUNNING - jpeg max + d5d6 exchange test"
 echo "PWD=$(pwd)"
 echo "=================================================="
 
@@ -34,6 +36,9 @@ if [ ! -f "$CSI_V2" ]; then
   exit 1
 fi
 
+echo "[TXW81X pre_build.sh] current buffers:"
+grep -E "CUSTOM_SIZE|JPG0_BUF_LEN|JPG0_NODE|JPG1_BUF_LEN|JPG1_NODE" "$CFG" || true
+
 echo "[TXW81X pre_build.sh] jpeg before:"
 grep -R -n -E "DQT_DEF|DQT_MAX_INDEX|TARGET_JPG_LEN|QUALITY_CTRL_|g_dqtable_index|pdqt_tab" \
   "$JPG_H" "$JPG_V2" 2>/dev/null || true
@@ -52,15 +57,22 @@ echo "[TXW81X pre_build.sh] jpeg after:"
 grep -R -n -E "DQT_DEF|DQT_MAX_INDEX|TARGET_JPG_LEN|QUALITY_CTRL_|g_dqtable_index|pdqt_tab" \
   "$JPG_H" "$JPG_V2" 2>/dev/null || true
 
-echo "[TXW81X pre_build.sh] format before:"
+echo "[TXW81X pre_build.sh] format/dvp before:"
 grep -n -E "IMAGE_FORMAT|YUV_MODE" "$CSI_H" || true
-grep -n -E "dvp_set_format|vpp_set_ycbcr|vpp_set_mode" "$CSI_V2" || true
+grep -n -E "dvp_set_format|vpp_set_ycbcr|vpp_set_mode|dvp_set_exchange_d5_d6|dvp_set_half_size" "$CSI_V2" || true
 
-# Test YUV byte order/mode
-sed -i -E 's|#define[[:space:]]+YUV_MODE[[:space:]]+[0-9]+|#define YUV_MODE                        2|' "$CSI_H"
+# Keep YUV_MODE at original YUYV
+sed -i -E 's|#define[[:space:]]+YUV_MODE[[:space:]]+[0-9]+|#define YUV_MODE                        0|' "$CSI_H"
 
-echo "[TXW81X pre_build.sh] format after:"
+# Restore/keep VPP UV and shrink tests as neutral/default-ish
+sed -i -E 's|vpp_dis_uv_mode\(vpp_test,[0-9]+\);|vpp_dis_uv_mode(vpp_test,1);|' "$CSI_V2"
+sed -i -E 's|vpp_set_buf1_shrink\(vpp_test,[0-9]+\);|vpp_set_buf1_shrink(vpp_test,1);|' "$CSI_V2"
+
+# DVP data bit exchange test
+sed -i -E 's|dvp_set_exchange_d5_d6\(dvp_test,0\);|dvp_set_exchange_d5_d6(dvp_test,1);|' "$CSI_V2"
+
+echo "[TXW81X pre_build.sh] format/dvp after:"
 grep -n -E "IMAGE_FORMAT|YUV_MODE" "$CSI_H" || true
-grep -n -E "dvp_set_format|vpp_set_ycbcr|vpp_set_mode" "$CSI_V2" || true
+grep -n -E "dvp_set_format|vpp_set_ycbcr|vpp_set_mode|dvp_set_exchange_d5_d6|dvp_set_half_size|vpp_dis_uv_mode|vpp_set_buf1_shrink" "$CSI_V2" || true
 
 echo "[TXW81X pre_build.sh] DONE"
